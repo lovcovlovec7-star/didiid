@@ -12,7 +12,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - name: Install dependencies
@@ -21,12 +21,14 @@ jobs:
           sudo apt-get install -y ffmpeg
           python -m pip install --upgrade pip
           python -m pip install requests beautifulsoup4
-      - name: Build Russian montage pack
+      - name: Build base Russian montage pack
         run: python tools/build_montage_pack.py
+      - name: Add verified CC0 packs and rebuild navigation
+        run: python tools/augment_montage_pack.py
       - name: Upload pack
         uses: actions/upload-artifact@v4
         with:
-          name: montage-sfx-pack-ru
+          name: montage-sfx-pack-ru-v2
           path: dist/МОНТАЖНЫЙ_SFX_ПАК_RU.zip
           compression-level: 0
           retention-days: 7
