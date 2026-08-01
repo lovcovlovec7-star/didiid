@@ -1,0 +1,32 @@
+name: Build Montage SFX Pack
+
+on:
+  pull_request:
+    paths:
+      - 'trigger_montage_pack.txt'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          python -m pip install --upgrade pip
+          python -m pip install requests beautifulsoup4
+      - name: Build Russian montage pack
+        run: python tools/build_montage_pack.py
+      - name: Upload pack
+        uses: actions/upload-artifact@v4
+        with:
+          name: montage-sfx-pack-ru
+          path: dist/МОНТАЖНЫЙ_SFX_ПАК_RU.zip
+          compression-level: 0
+          retention-days: 7
